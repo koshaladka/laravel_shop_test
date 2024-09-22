@@ -1,0 +1,353 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "OpenApi Documentation",
+        "description": "ATOL LKP api documentation<br/>Перед тестированием роутов нужна авторизация через keycloak (АТОЛ ID), после чего необходимо ввести Bearer token в зону Authorize",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://my-default-host.com",
+            "description": "ATOL LKP DOC"
+        }
+    ],
+    "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Вход пользователя",
+                "description": "Вход пользователя с использованием email и password",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешный вход",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|234567890abcdefghijklmnopqrstuvwxyz"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неверные учетные данные"
+                    }
+                }
+            }
+        },
+        "/product/check": {
+            "post": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Проверка доступности продукта",
+                "description": "Проверка доступности продукта и создание заказа, если его нет",
+                "operationId": "38c850827a835f378a697c2f0f5439ac",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "ID продукта",
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешная проверка",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "unique_code": {
+                                            "type": "string",
+                                            "example": "abcdefghij"
+                                        },
+                                        "available": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Product is available for rent or sale"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверные данные запроса"
+                    },
+                    "401": {
+                        "description": "Неавторизованный доступ"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/product/buy": {
+            "post": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Покупка продукта",
+                "description": "Покупка продукта с проверкой доступности, созданием заказа и обработкой платежа",
+                "operationId": "5827bbbfef73884af1569c1366b75a8f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "ID продукта",
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешная покупка",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Product purchased successfully"
+                                        },
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверные данные запроса"
+                    },
+                    "401": {
+                        "description": "Неавторизованный доступ"
+                    },
+                    "404": {
+                        "description": "Продукт не найден или недоступен"
+                    },
+                    "500": {
+                        "description": "Ошибка платежа"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/product/rent": {
+            "post": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Аренда продукта",
+                "description": "Аренда продукта с проверкой доступности, созданием заказа и обработкой платежа",
+                "operationId": "7637da00cf3b625e71954ec23d6d2693",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "ID продукта",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "duration": {
+                                        "description": "Продолжительность аренды в часах (4, 8, 12, 24)",
+                                        "type": "integer",
+                                        "example": 4
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешная аренда",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Product rent successfully"
+                                        },
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверные данные запроса"
+                    },
+                    "401": {
+                        "description": "Неавторизованный доступ"
+                    },
+                    "404": {
+                        "description": "Продукт не найден или недоступен"
+                    },
+                    "500": {
+                        "description": "Ошибка платежа"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/product/rent_more": {
+            "post": {
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Продление аренды продукта",
+                "description": "Продление аренды продукта с проверкой наличия заказа, проверкой текущего времени аренды, обработкой платежа и обновлением времени возврата",
+                "operationId": "621191654c2e79c30bdccca91da7da48",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "ID продукта",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "duration": {
+                                        "description": "Продолжительность аренды в часах (4, 8, 12, 24)",
+                                        "type": "integer",
+                                        "example": 4
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешное продление аренды",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Product rent more successfully"
+                                        },
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверные данные запроса"
+                    },
+                    "401": {
+                        "description": "Неавторизованный доступ"
+                    },
+                    "404": {
+                        "description": "Продукт не найден или недоступен"
+                    },
+                    "500": {
+                        "description": "Ошибка платежа"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Product",
+            "description": "Product"
+        }
+    ]
+}

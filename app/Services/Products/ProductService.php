@@ -3,13 +3,10 @@
 namespace App\Services\Products;
 
 use App\Models\Order;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class ProductService
 {
-    public function checkAvailability($productId)
+    public function checkAvailability($productId): array
     {
         $order = Order::where('product_id', $productId)
             ->whereIn('status', ['rent', 'sale'])

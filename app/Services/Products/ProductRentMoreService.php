@@ -15,7 +15,7 @@ class ProductRentMoreService extends ProductService
     {
         $this->paymentService = $paymentService;
     }
-    public function execute($request)
+    public function execute($request): array
     {
         $user = auth()->user();
 
