@@ -1,18 +1,12 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/login', [AuthController::class, 'login']);
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::get('/cities', [CityController::class, 'index']);
 
-    Route::group(['prefix' => '/product'], function () {
-        Route::post('/check', [ProductController::class, 'check']);
-        Route::post('/buy', [ProductController::class, 'buy']);
-        Route::post('/rent', [ProductController::class, 'rent']);
-        Route::post('/rent_more', [ProductController::class, 'rentMore']);
-    });
+Route::get('/users', [UserController::class, 'index']);
+Route::post('/user', [UserController::class, 'store']);
 
-});
